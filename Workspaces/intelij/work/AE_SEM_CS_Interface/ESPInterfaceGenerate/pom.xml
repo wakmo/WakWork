@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>net.aconite.affina</groupId>
+        <artifactId>esp-interface-parent</artifactId>
+        <version>2.12</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>esp-interface-gen</artifactId>
+    <packaging>jar</packaging>
+    <name>ESPInterfaceGenerate</name>
+
+
+    <dependencies> 
+        <!-- Testing -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- <finalName>esp-interface</finalName> -->
+        <plugins>
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.7.3</version>
+                <executions>
+                    <execution>
+                        <id>generate-esp-cs</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>false</verbose>
+                            <specVersion>2.0</specVersion>
+                            <schemaDirectory>src/main/resources/net/aconite/affina/espinterface/xmlmapping/cs</schemaDirectory>
+                            <generateDirectory>src/main/java</generateDirectory>
+                            <generatePackage>net.aconite.affina.espinterface.xmlmapping.cs</generatePackage>
+                            <forceRegenerate>true</forceRegenerate>
+                        </configuration>                        
+                    </execution>
+                    <execution>
+                        <id>generate-esp-affina</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>false</verbose>
+                            <specVersion>2.0</specVersion>
+                            <schemaDirectory>src/main/resources/net/aconite/affina/espinterface/xmlmapping/affina</schemaDirectory>
+                            <generateDirectory>src/main/java</generateDirectory>
+                            <generatePackage>net.aconite.affina.espinterface.xmlmapping.affina</generatePackage>
+                            <forceRegenerate>true</forceRegenerate>
+                        </configuration>                        
+                    </execution>
+                    <execution>
+                        <id>generate-esp-sem</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>false</verbose>
+                            <specVersion>2.0</specVersion>
+                            <schemaDirectory>src/main/resources/net/aconite/affina/espinterface/xmlmapping/sem</schemaDirectory>
+                            <generateDirectory>src/main/java</generateDirectory>
+                            <generatePackage>net.aconite.affina.espinterface.xmlmapping.sem</generatePackage>
+                            <forceRegenerate>true</forceRegenerate>
+                        </configuration>                        
+                    </execution>
+                </executions>
+            </plugin>
+			
+			 <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>checksum-zip</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <target>
+                                <property name="sourceDir" value="${project.build.directory}/"/>
+                                <echo>installing jars to repository</echo>
+                                <echo>Base dir : ${basedir}</echo>
+                                <echo>Source dir : ${sourceDir}</echo>
+                                <exec dir="${basedir}/../ESPInterface/lib" executable="cmd.exe">
+                                    <arg value="/c"/>
+                                    <arg value="install-jars.bat"/>
+                                </exec>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+		
+		<resources>
+            <resource>
+                <directory>src/main/resources</directory>
+				<excludes>
+				  <exclude>xml/**</exclude>
+				</excludes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+    </build>
+</project>
