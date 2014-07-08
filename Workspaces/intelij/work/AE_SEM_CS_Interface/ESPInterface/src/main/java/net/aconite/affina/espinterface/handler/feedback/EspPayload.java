@@ -17,6 +17,8 @@ public class EspPayload implements Serializable
     
     private String header;    
     private String message; 
+    private String alarmMsg; 
+    private String originalMsg;
     private boolean isError;
     
     public EspPayload(String header,String message, boolean isError) 
@@ -24,6 +26,20 @@ public class EspPayload implements Serializable
         this.header = header;
         this.message = message;
         this.isError = isError;
+    }
+    
+    public EspPayload(String header,String message,String alarmMsg, String originalMsg, boolean isError) 
+    {
+        this.header = header;
+        this.message = message;
+        this.alarmMsg = alarmMsg;
+        this.isError = isError;
+        this.originalMsg = originalMsg;
+    }
+
+    public String getOriginalMsg()
+    {
+        return originalMsg;
     }
 
     public String getMessage() 
@@ -34,6 +50,16 @@ public class EspPayload implements Serializable
     public void setMessage(String message) 
     {
         this.message = message;
+    }
+
+    public String getAlarmMsg()
+    {
+        return alarmMsg;
+    }
+
+    public void setAlarmMsg(String alarmMsg)
+    {
+        this.alarmMsg = alarmMsg;
     }
 
     public boolean isError() 
@@ -61,14 +87,29 @@ public class EspPayload implements Serializable
         return message;
     }
     
+    public String getAlarmMessageBody() 
+    {
+        return alarmMsg;
+    }
+    
     public String getMessageWithHeader() 
     {
         return header+" "+message;
     }
     
+    public String getAlarmMessageWithHeader() 
+    {
+        return header+" "+alarmMsg;
+    }
+    
     public String getMessageInOneLine() 
     {
         return message.replace("\n", "");
+    }
+    
+     public String getAlarmMessageInOneLine() 
+    {
+        return alarmMsg.replace("\n", "");
     }
     
     public String getMessageInOneLineWithHeader() 

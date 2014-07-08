@@ -387,7 +387,7 @@ public class Result<T extends AbstractModel>
     {
         if (hasException())
         {
-            logger.error(getException().getMessage());
+            logger.error(getException().getMessage() + " " + getException().getErrReason());
         }
     }
 

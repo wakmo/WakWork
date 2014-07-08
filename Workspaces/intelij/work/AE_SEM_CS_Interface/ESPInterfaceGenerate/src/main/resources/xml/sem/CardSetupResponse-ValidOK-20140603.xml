@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CardSetupResponse>
+    <TrackingReference>GDVS20140514120700-VSDCCL-01-VSDC-1.1a</TrackingReference>
+    <status>STATUS_OK</status>
+</CardSetupResponse>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<CardSetupResponse>
+    <TrackingReference>GDVS20140514120700-VSDCCL-01-VSDC-1.1a</TrackingReference>
+    <status>ERROR</status>
+    <error ErrorCode="-34324" Description="Error Error!!!" Data="Hmmm Error"/>
+</CardSetupResponse>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<CardSetupResponse>
+    <TrackingReference>GDVS20140514120700-VSDCCL-01-VSDC-1.1x</TrackingReference>
+    <status>STATUS_OK</status>
+</CardSetupResponse>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<CardSetupResponse>
+    <TrackingReference>GDVS20140514120700-VSDCCL-01-VSDC-1.1x</TrackingReference>
+    <status>ERROR</status>
+    <error ErrorCode="-34324" Description="Error Error!!!" Data="Hmmm Error"/>
+</CardSetupResponse>

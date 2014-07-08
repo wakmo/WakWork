@@ -74,6 +74,7 @@ public class EspConstant
     public final static String VT_ERROR_DATA = "errorData";
     public final static String VT_ERROR_DESCRIPTION = "errorDescription";
     public final static String VT_ERROR_CODE = "errorCode";
+    public final static String ORIGINAL_DESCRIPTION = "originalDescription";
 
     //------Database Table Related Constant-----------------------------------
     public final static String DB_AE_TRACKING_ID = "aeTrackingId";

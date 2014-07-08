@@ -222,7 +222,17 @@
                                timeout="1000">
         <int:mapping channel="fromEspToAffinaErrorChannel" exception-type="java.lang.IllegalArgumentException"/>
         <int:mapping channel="fromEspToAffinaErrorChannel" exception-type="java.lang.NullPointerException"/>
+        <int:mapping channel="fromEspToAffinaErrorChannel" exception-type="org.springframework.integration.MessageHandlingException"/>
+        <int:mapping channel="fromEspToAffinaErrorChannel" exception-type="org.springframework.integration.MessageDeliveryException"/>
+        <int:mapping channel="fromEspToAffinaErrorChannel" exception-type="org.springframework.integration.support.channel.ChannelResolutionException"/>
+        <int:mapping channel="toCustomErrorChannel" exception-type="org.springframework.integration.transformer.MessageTransformationException"/>
     </int:exception-type-router>
+    
+    <int:channel id="toCustomErrorChannel"/>
+    <int:service-activator input-channel="toCustomErrorChannel" ref="xmlValidationHandler" 
+                           method="process" output-channel="toSemMarshallerChannel">
+                           
+    </int:service-activator>
 
     <!--###################### PROGRESS HANDLING ############################################-->
 

@@ -197,17 +197,19 @@ public class ScriptUpdateProcessor
         }
         if (DataUtil.isEmpty(ssu.getSource()))
         {
+            setErrorData("Source");
             isScriptValidationSuccessful = false;
-            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_MESSAGE),
+            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_DATA),
                                                 getErrorMessage(MsgConstant.INVALID_MESSAGE_EMPTY_SOURCE),
-                                                getErrorCode(MsgConstant.INVALID_MESSAGE));
+                                                getErrorCode(MsgConstant.INVALID_DATA));
         }
         if (DataUtil.isEmpty(ssu.getTarget()))
         {
+            setErrorData("Target");
             isScriptValidationSuccessful = false;
-            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_MESSAGE),
+            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_DATA),
                                                 getErrorMessage(MsgConstant.INVALID_MESSAGE_EMPTY_TARGET),
-                                                getErrorCode(MsgConstant.INVALID_MESSAGE));
+                                                getErrorCode(MsgConstant.INVALID_DATA));
         }
         if (DataUtil.isNull(ssu.getScriptSequenceNumber()))
         {
@@ -226,26 +228,29 @@ public class ScriptUpdateProcessor
 
         if (DataUtil.isEmpty(ssu.getTrackingReference()))
         {
+            setErrorData("TrackingReference");
             isScriptValidationSuccessful = false;
-            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_MESSAGE),
+            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_DATA),
                                                 getErrorMessage(MsgConstant.INVALID_MESSAGE_EMPTY_TRACKING_REF),
-                                                getErrorCode(MsgConstant.INVALID_MESSAGE));
+                                                getErrorCode(MsgConstant.INVALID_DATA));
         }
 
         if (DataUtil.isNull(ssu.getCard()) || DataUtil.isEmpty(ssu.getCard().getPAN()))
         {
+            setErrorData("PAN");
             isScriptValidationSuccessful = false;
-            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_MESSAGE),
+            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_DATA),
                                                 getErrorMessage(MsgConstant.INVALID_MESSAGE_EMPTY_PAN),
-                                                getErrorCode(MsgConstant.INVALID_MESSAGE));
+                                                getErrorCode(MsgConstant.INVALID_DATA));
         }
 
         if (DataUtil.isEmpty(ssu.getCard().getPANSequence()) || !DataUtil.isPSNValid(ssu.getCard().getPANSequence()))
         {
             isScriptValidationSuccessful = false;
-            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_MESSAGE),
+            setErrorData("PANSequence");
+            throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_DATA),
                                                 getErrorMessage(MsgConstant.INVALID_MESSAGE_EMPTY_PSN),
-                                                getErrorCode(MsgConstant.INVALID_MESSAGE));
+                                                getErrorCode(MsgConstant.INVALID_DATA));
         }
 
         long expDate = -1;
@@ -287,6 +292,7 @@ public class ScriptUpdateProcessor
         boolean isStatusValid = isValidScriptUpdateStatus(ssu);
         if (!isStatusValid)
         {
+            setErrorData(ssu.getScriptUpdateStatus().toString());
             isScriptValidationSuccessful = false;
             throw new ScriptValidationException(getErrorMessage(MsgConstant.INVALID_SCRIPT_UPDATE_STATUS),
                                                 getErrorMessage(MsgConstant.INVALID_SCRIPT_UPDATE_STATUS)

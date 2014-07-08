@@ -2,9 +2,9 @@
 #set( $isError = (${status} == "ERROR"))
 #set( $isErrorCode = (${errorCode} != ""))
 #set( $isErrorData = (${errorData} != ""))
+#set( $isDescription = (${errorDescription} != ""))
 #if ($isError)
-Script status response sent
-    Tracking Reference : ${trackingReference}, Error [Desc : ${errorDescription}#if($isErrorCode), Code : ${errorCode}#end#if($isErrorData), Data : ${errorData}#end]
+Script status response sent Tracking Reference : ${trackingReference} #if($isDescription) ,Error [Desc : ${errorDescription}#end#if($isErrorCode), Code : ${errorCode}#end#if($isErrorData), Data : ${errorData}#end #if($isDescription)]#end
 #else
 Script status response sent
   Type : ${responseType}

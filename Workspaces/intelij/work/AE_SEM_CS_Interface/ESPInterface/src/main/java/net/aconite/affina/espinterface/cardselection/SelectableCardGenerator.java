@@ -130,13 +130,16 @@ public class SelectableCardGenerator implements CardGenerator<ScriptableCard>
         ScriptableApplication scriptableApp = null;
         if (softCard != null)
         {
-            if (softCard.getCardStatus() != CardStatus.ACTIVE)
+            if (softCard.getCardStatus() != CardStatus.ACTIVE && 
+                    softCard.getCardStatus() != CardStatus.CANCELLED && 
+                    softCard.getCardStatus() != CardStatus.SUSPENDED &&
+                    softCard.getCardStatus() != CardStatus.SUSPENDED_PURGED)
             {
-                throw new ScriptValidationException(ScriptUpdateProcessor.getErrorMessage(
-                        MsgConstant.SUSPENED_OR_CANCELLED_CARD),
-                                                    ScriptUpdateProcessor.getErrorMessage(
-                        MsgConstant.SUSPENED_OR_CANCELLED_CARD), ScriptUpdateProcessor.getErrorCode(
-                        MsgConstant.SUSPENED_OR_CANCELLED_CARD));
+//                throw new ScriptValidationException(ScriptUpdateProcessor.getErrorMessage(
+//                        MsgConstant.SUSPENED_OR_CANCELLED_CARD),
+//                                                    ScriptUpdateProcessor.getErrorMessage(
+//                        MsgConstant.SUSPENED_OR_CANCELLED_CARD), ScriptUpdateProcessor.getErrorCode(
+//                        MsgConstant.SUSPENED_OR_CANCELLED_CARD));
             }
             SoftCard sc = softCard;
             long accountId = sc.get_t1Account().getPrimaryKey().longValue();

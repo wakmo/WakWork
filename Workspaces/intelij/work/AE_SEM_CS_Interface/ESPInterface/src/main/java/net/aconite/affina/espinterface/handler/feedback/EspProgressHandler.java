@@ -81,7 +81,15 @@ public class EspProgressHandler implements IEspFeedbackHandler
                                 espFeedbackHeader.isShowWarningMessages(String.valueOf(headers.get(JmsHeaders.TYPE)))) || 
                                 espFeedbackHeader.isShowValidationError(String.valueOf(headers.get(JmsHeaders.TYPE)));
             message = message.replaceAll("ALARM", "");
-            logger.error(msgPayload.getMessageBody().replaceAll("ALARM", ""));
+            if(showProgressForSpecialError)
+            {
+                logger.error(msgPayload.getOriginalMsg().replaceAll("ALARM", ""));
+                logger.info(msgPayload.getAlarmMessageBody().replaceAll("ALARM", ""));
+            }
+            else
+            {
+                logger.error(msgPayload.getMessageBody().replaceAll("ALARM", ""));
+            }
         }
         else
         {
@@ -103,6 +111,8 @@ public class EspProgressHandler implements IEspFeedbackHandler
     {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
         StringBuilder sb = new StringBuilder();
+        StringBuilder alarmMsg = new StringBuilder();
+        StringBuilder originalMsg = new StringBuilder();
 
         boolean isError=false;
 
@@ -155,11 +165,27 @@ public class EspProgressHandler implements IEspFeedbackHandler
             props.put(EspConstant.VT_STATUS, AffinaEspUtils.getEmptyIfNull(res.getStatus().name()));
             if (res.getStatus() == StatusType.ERROR && res.getError() != null)
             {
-                    props.put(EspConstant.VT_ERROR_DATA, AffinaEspUtils.getEmptyIfNull(res.getError().getData()));
-                    props.put(EspConstant.VT_ERROR_DESCRIPTION, AffinaEspUtils.getEmptyIfNull(res.getError().getDescription()));
-                    props.put(EspConstant.VT_ERROR_CODE, AffinaEspUtils.getEmptyIfNull(res.getError().getErrorCode()));
-                    isError=true;
-                }
+                props.put(EspConstant.VT_ERROR_DATA, AffinaEspUtils.getEmptyIfNull(res.getError().getData()));                                    
+                props.put(EspConstant.VT_ERROR_DESCRIPTION, AffinaEspUtils.getEmptyIfNull(res.getError().getDescription()));
+                props.put(EspConstant.VT_ERROR_CODE, AffinaEspUtils.getEmptyIfNull(res.getError().getErrorCode())); 
+                isError=true;
+                
+                Hashtable<String, Object> alarmProps = new Hashtable<String, Object>();
+                alarmProps.put(EspConstant.VT_RESPONSE_TYPE, EspConstant.SCRIPT_STATUS_RESPONSE);
+                alarmProps.put(EspConstant.VT_TRACKING_REFERENCE, AffinaEspUtils.getEmptyIfNull(res.getTrackingReference()));
+                alarmProps.put(EspConstant.VT_STATUS, AffinaEspUtils.getEmptyIfNull(res.getStatus().name()));
+                alarmProps.put(EspConstant.VT_ERROR_DATA, "");                                    
+                alarmProps.put(EspConstant.VT_ERROR_DESCRIPTION, "");
+                alarmProps.put(EspConstant.VT_ERROR_CODE, ""); 
+                
+                originalMsg.append(res.getError().getDescription());
+                originalMsg.append(" Code: " + res.getError().getErrorCode());
+                originalMsg.append(" Data: " + res.getError().getData().replaceAll("ALARM", ""));
+                alarmProps.put(EspConstant.ORIGINAL_DESCRIPTION, originalMsg); 
+                alarmMsg.append(VelocityEngineUtils.mergeTemplateIntoString(espFeedbackHeader.getVelocityEngine(),
+                                         "/scriptStatusResponse.vm",espFeedbackHeader.getEspMessageEncoding(), alarmProps));                
+                
+            }
             else
             {
                 isError=false;
@@ -212,7 +238,8 @@ public class EspProgressHandler implements IEspFeedbackHandler
             sb.append(inPayload.toString());
         }
 
-        EspPayload espPayload=new EspPayload(espFeedbackHeader.generateMessageHeader(),sb.toString(),isError);
+        EspPayload espPayload=new EspPayload(espFeedbackHeader.generateMessageHeader(),
+                                sb.toString(),alarmMsg.toString(), originalMsg.toString(), isError);
 
         return espPayload;
     }

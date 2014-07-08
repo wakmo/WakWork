@@ -132,6 +132,11 @@
    <bean id="errorHandler" class="net.aconite.affina.espinterface.handler.feedback.EspErrorHandler">
 		<constructor-arg ref="feedbackHeader"/>		
     </bean>
+    
+    <bean id="xmlValidationHandler" class="net.aconite.affina.espinterface.handler.feedback.XMLValidationHandler">
+		<constructor-arg ref="feedbackHeader"/>		
+    </bean>    
+    
 	
     <bean id="progressHandler" class="net.aconite.affina.espinterface.handler.feedback.EspProgressHandler">
         <constructor-arg ref="feedbackHeader"/>		
