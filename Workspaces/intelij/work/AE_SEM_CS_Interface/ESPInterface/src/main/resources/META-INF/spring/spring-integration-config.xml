@@ -100,7 +100,23 @@
     <!--from SEM to ESP Message Decryptor -->
 	<int:channel id="fromSemToEspJMSValidatorChannel"/>
     <int:service-activator input-channel="fromSemToEspJMSValidatorChannel" ref="pciEnforcerSemEsp" method="decryptMessage"
-                           output-channel="fromSemToEspUnmarshallerChannel"/>
+                           output-channel="fromSemToEspXMLValidatorChannel"/>
+						   
+	<int:channel id="fromSemToEspXMLValidatorChannel"/>
+    <int:service-activator input-channel="fromSemToEspXMLValidatorChannel" ref="xmlValidatorSemEsp" method="validate"
+                           output-channel="fromSemToEspXMLValidateRouterChannel"/>
+						   
+	<int:channel id="fromSemToEspXMLValidateRouterChannel"/>
+    <int:exception-type-router input-channel="fromSemToEspXMLValidateRouterChannel" default-output-channel="fromSemToEspUnmarshallerChannel"
+                               timeout="1000">        
+        <int:mapping channel="fromSemToEspCustomErrorChannel" exception-type="net.aconite.affina.espinterface.exceptions.EspSAXParserException"/>
+    </int:exception-type-router>
+	
+	<int:channel id="fromSemToEspCustomErrorChannel"/>
+    <int:service-activator input-channel="fromSemToEspCustomErrorChannel" ref="xmlValidationHandler" 
+                           method="process" output-channel="toSemMarshallerChannel">                           
+    </int:service-activator>
+
 
     <!--from SEM to ESP unmarshaller -->
     <int:channel id="fromSemToEspUnmarshallerChannel"/>

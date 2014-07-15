@@ -99,6 +99,10 @@
         <constructor-arg value="${from.esp.to.custserv.pci.encryptKeyAlias}"/>
         <constructor-arg value="${esp.encryption.encoding}"/>
     </bean>
+	
+	<bean id="xmlValidatorSemEsp" class="net.aconite.affina.espinterface.validators.XMLValidator">
+        <property name="schema" value="/net/aconite/affina/espinterface/xmlmapping/sem/AllInOneIn.xsd"/>
+    </bean>
 
     <!-- To Handle alerts from AFFINA to ESP here-->
     <bean id="cardSetupAlertHandler" class="net.aconite.affina.espinterface.handler.message.CardSetupAlertHandler">

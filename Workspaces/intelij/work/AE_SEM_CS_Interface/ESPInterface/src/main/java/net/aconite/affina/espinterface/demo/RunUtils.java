@@ -23,6 +23,22 @@ import net.aconite.affina.espinterface.helper.DateHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import java.io.*;
+import java.net.URL;
+import java.util.logging.Level;
+
 /**
  *
  * @author wakkir.muzammil
@@ -407,11 +423,52 @@ public class RunUtils
             //return decryptedIssuerCertBytes;    
          }
     
+    private static String xmlE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<CardSetupResponse>\n" +
+            "    <TrackingReference>13121221212</TrackingReference>\n" +
+            "    <Status>STATUS_OK</Status>\n" +
+            "</CardSetupResponse>";
+
+    private static String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<ScriptStatusResponse>\n" +
+            "    <TrackingReference>235235235235</TrackingReference>\n" +
+            "    <status>STATUS_OK</status>\n" +
+            "</ScriptStatusResponse>";
+    
+    public void validateXML() throws ParserConfigurationException, IOException, SAXException
+    {
+        
+
+        //XML parsing
+        DocumentBuilderFactory docBuilderfactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = docBuilderfactory.newDocumentBuilder();
+
+        InputStream is = new ByteArrayInputStream(xml.getBytes());
+        Document xmlDocument = builder.parse(is);
+        xmlDocument.getDocumentElement().normalize();
+        
+        //InputStream iss=this.getClass().getClassLoader().getResourceAsStream("/net/aconite/affina/espinterface/xmlmapping/sem/ScriptStatusResponse.xsd");
+       URL xsdUrlA = this.getClass().getResource("/net/aconite/affina/espinterface/xmlmapping/sem/ScriptStatusResponse.xsd");
+        
+        SchemaFactory schemaFactory1 = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        
+        //Schema schema1= schemaFactory1.newSchema(new StreamSource(iss));
+        Schema schema1= schemaFactory1.newSchema(xsdUrlA);
+
+        
+        //Validation
+        javax.xml.validation.Validator validator = schema1.newValidator();
+        Source source = new DOMSource(xmlDocument);
+        validator.validate(source);
+        
+        System.out.println("Validated successfully");
+    }
+         
     public static void main(String[] args) throws ParseException, AffinaEspUtilException, DFUtilitiesException, DataCollectionException, SecurityDataTranslationException
     {
         System.out.println("Hello World");
         
-        //RunUtils ru=new RunUtils();
+        RunUtils ru=new RunUtils();
         //ru.testEndDateTime();
         //ru.testCurrentDateTime();
         //ru.testString2DateTime();
@@ -422,16 +479,33 @@ public class RunUtils
        //System.out.println("xx>"+xx); 
         //ru.toHex();
         //ru.getDERLength();
-        
-        //System.out.println("xx>"+String.valueOf(null)); 
-        //ru.getDecriptedIssuerCertSignature();
-        
-        String configuration="ICSPMAexport2014.06.19-02.26.18 - Baseline.zippma";
-        
-        String dataBase = configuration.substring(configuration.indexOf('@') + 1, configuration.length()).trim();
-        String configFileName = configuration.substring(0, configuration.indexOf('@')).trim();
-        System.out.println("dataBase:"+dataBase);
-        System.out.println("ConfigFileName:"+configFileName);
+        try
+        {
+            //System.out.println("xx>"+String.valueOf(null)); 
+            //ru.getDecriptedIssuerCertSignature();
+            
+            /*
+            String configuration="ICSPMAexport2014.06.19-02.26.18 - Baseline.zippma";
+            
+            String dataBase = configuration.substring(configuration.indexOf('@') + 1, configuration.length()).trim();
+            String configFileName = configuration.substring(0, configuration.indexOf('@')).trim();
+            System.out.println("dataBase:"+dataBase);
+            System.out.println("ConfigFileName:"+configFileName);
+            */
+            ru.validateXML();
+        }
+        catch (ParserConfigurationException ex)
+        {
+           ex.printStackTrace();
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
+        catch (SAXException ex)
+        {
+            ex.printStackTrace();
+        }
                
              
              

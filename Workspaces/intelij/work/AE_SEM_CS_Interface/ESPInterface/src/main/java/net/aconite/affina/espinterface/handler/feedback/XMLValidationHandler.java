@@ -4,8 +4,6 @@
  */
 package net.aconite.affina.espinterface.handler.feedback;
 
-import java.util.Hashtable;
-import net.acointe.affina.esp.AffinaEspUtils;
 import net.aconite.affina.espinterface.constants.EspConstant;
 import net.aconite.affina.espinterface.exceptions.*;
 import net.aconite.affina.espinterface.helper.*;
@@ -16,9 +14,6 @@ import org.springframework.integration.*;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.jms.JmsHeaders;
 import org.springframework.integration.support.MessageBuilder;
-import org.springframework.integration.support.channel.ChannelResolutionException;
-import org.springframework.integration.transformer.MessageTransformationException;
-import org.springframework.ui.velocity.VelocityEngineUtils;
 
 /**
  * @author wakkir.muzammil
@@ -43,15 +38,23 @@ public class XMLValidationHandler implements IEspFeedbackHandler
     @ServiceActivator
     public Message process(Message<MessagingException> inMessage)
     {
-        //Message outMessage = processErrorMessage(inMessage);
-        ScriptValidationException ex = new ScriptValidationException(inMessage.getPayload().getMessage(), 
-                inMessage.getPayload().getCause().getMessage() , "-63029", ScriptProcessingRuntimeException.ERROR_VALIDATION);
-        Result r = Result.getInstance(false, ex, "", null);
-        r.handleError();
-        ScriptStatusResponse response = r.getResultData().getScriptStatusResponse();
         MessageHeaders inHeaders = inMessage.getHeaders();
-        Message<ScriptStatusResponse> outMessage = generateScriptStatusResponseMessage(inHeaders, response);
-        return outMessage;
+        MessagingException inPayload = (MessagingException)inMessage.getPayload();
+        
+        if(EspConstant.SCRIPT_STATUS_UPDATE.equals(inHeaders.get(JmsHeaders.TYPE)))
+        {
+            ScriptValidationException ex = new ScriptValidationException(inPayload.getMessage(), 
+                    inPayload.getCause().getMessage() , "-63029", ScriptProcessingRuntimeException.ERROR_VALIDATION);
+            Result r = Result.getInstance(false, ex, "", null);
+            r.handleError();
+            ScriptStatusResponse response = r.getResultData().getScriptStatusResponse();        
+            Message<ScriptStatusResponse> outMessage = generateScriptStatusResponseMessage(inHeaders, response);
+            return outMessage;
+        }
+        else
+        {
+            throw new MessagingException(inPayload.getMessage(),inPayload.getCause());
+        }
     }
     
     private Message<ScriptStatusResponse> generateScriptStatusResponseMessage(MessageHeaders headers,

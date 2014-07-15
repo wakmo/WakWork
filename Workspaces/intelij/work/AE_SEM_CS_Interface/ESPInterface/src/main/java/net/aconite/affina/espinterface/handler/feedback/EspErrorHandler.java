@@ -52,17 +52,10 @@ public class EspErrorHandler implements IEspFeedbackHandler
     private Message processErrorMessage(Message<MessagingException> inMessage)
     {
         MessageHeaders inHeaders = inMessage.getHeaders();
-        MessagingException inPayload = inMessage.getPayload();
-        Message outMessage;
-        if (inPayload instanceof MessageTransformationException)
-        {
-            outMessage = inMessage;
-        }
-        else
-        {
-            EspPayload espPayload = buildErrorPayload(inPayload);                
-            outMessage = generateErrorMessage(inHeaders, espPayload);
-        }   
+        MessagingException inPayload = inMessage.getPayload();        
+         
+        EspPayload espPayload = buildErrorPayload(inPayload);                
+        Message outMessage = generateErrorMessage(inHeaders, espPayload);
         return outMessage;
     }
 

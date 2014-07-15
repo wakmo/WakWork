@@ -23,6 +23,7 @@ public class EspConstant
     //from Sem to Esp
     public final static String STAGE_SCRIPT_RESPONSE = "StageScriptResponse";
     public final static String CARD_SETUP_RESPONSE = "CardSetupResponse";
+    public final static String SCRIPT_STATUS_UPDATE = "ScriptStatusUpdate";
     
     //from CS to Esp
     public final static String SEND_SCRIPT_REQUEST = "SendScriptRequest";    
