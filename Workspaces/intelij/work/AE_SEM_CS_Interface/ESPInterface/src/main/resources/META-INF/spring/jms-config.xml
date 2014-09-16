@@ -147,6 +147,13 @@
             connection-factory="affinaCachedMQConnectionFactory"
             header-mapper="priorityHeaderMapper"/>
 	-->
+	<!--https://jira.spring.io/browse/INT-2448 : Document a "selector" JMS Adapter Attribute -->
+	<!-- 
+	<jms:message-driven-channel-adapter 
+		destination="xyzQueue"
+		channel="xyzPipe"
+		selector="someId = '75D938E89AF18C30'"/>
+	-->
 	<!-- it is required to overwrite header-mapper & jms-template to pass JMSPriority to JMS message-->
 	<!-- https://jira.springsource.org/browse/INT-3259 -->
 	<int-jms:outbound-channel-adapter 
